@@ -11,9 +11,7 @@ public class Main {
     static String[] userMoves;
     static String[] computerMoves;
     static String gameInstructions; //description of the game and instructions , to-do
-    static String roundInstructions;//prints every round, asks user to defect/stick to story
     static int roundNumber;
-    static int gameNumber;
     static String[] validMoves = {"c", "cooperate", "d", "defect"};
     static String[] yesNoResponse = {"y", "yes", "n", "no"};
     static boolean needsYesOrNo=false;
@@ -39,15 +37,17 @@ public class Main {
     }
 
     public static void round(){ //this method runs each round
-        userMoves[roundNumber]=promptedInput(roundInstructions); //prompt user, take in and log users move
+        userMoves[roundNumber]=promptedInput("do you cooperate or defect"); //prompt user, take in and log users move
 
         //determine outcome of round
         if(userMoves[roundNumber].equals("c") && computerMoves[roundNumber].equals("c")){
-            //change scores accordingly and print results
+            System.out.println("you both cooperated");
         }if(userMoves[roundNumber].equals("c") && computerMoves[roundNumber].equals("d")){
-
+            System.out.println("they defected");
         }if(userMoves[roundNumber].equals("d") && computerMoves[roundNumber].equals("c")){
-
+            System.out.println("they cooperated");
+        }if(userMoves[roundNumber].equals("d") && computerMoves[roundNumber].equals("d")){
+            System.out.println("you both defected");
         }
 
         roundNumber++;
@@ -55,6 +55,7 @@ public class Main {
 
     public static void settings(){
         //print settings options and allow user to adjust language, input options
+        System.out.println();//setting instructions
     }
 
     public static String promptedInput(String prompt){ //
@@ -64,16 +65,23 @@ public class Main {
         input=input.toLowerCase();
 
         //check the user input against valid inputs
-        if(roundNumber==numberOfRounds-1){ //used when the game is ending
+        if(needsYesOrNo){ //only runs if we want a yes or no
             for(int i=0; i<yesNoResponse.length; i++){
                 if(input.equals(yesNoResponse[i])){
                     //return "y" for yes or "n" for no regardless of the user input; this should make things easier
-                    if(i % 2 == 1) return yesNoResponse[i-1];
-                    else return yesNoResponse[i];
+                    if(i % 2 == 1){
+                        needsYesOrNo=false;
+                        return yesNoResponse[i-1];
+                    }
+                    else{
+                        needsYesOrNo=false;
+                        return yesNoResponse[i];
+                    }
                 }
             }
         }
 
+        //for users decisions
         for(int i=0; i<validMoves.length; i++){
             if(input.equals(validMoves[i])){
                 //return "c" for cooperate or "d" for defect regardless of the user input; this should make things easier
@@ -81,21 +89,10 @@ public class Main {
                 else return validMoves[i];
             }
         }
+        //if at any point user wants to access settings/instructions
         if(input.equals("s")||input.equals("settings")) settings();
         return null;//need to sort out invalid inputs
     }
-
-    /*public static String interpretInput(String input){//THIS METHOD HAS BEEN COMBINES WITH promptedInput
-        for(int i=0; i<validMoves.length; i++){
-            if(input.equals(validMoves[i])){//check the user input against valid moves
-                //return "c" for cooperate or "d" for defect regardless of the user input; this should make things easier
-                if(i % 2 == 1) return validMoves[i-1];
-                else return validMoves[i];
-            }
-        }
-        if(input.equals("s")||input.equals("settings")) settings();
-        return null;
-    }*/
 
     public static void endGame(){
         //runs when a game ends. should: announce score, announce victor, announce overall score including past games, offer option to play again or quit
@@ -106,5 +103,10 @@ public class Main {
         needsYesOrNo=true;
         String decision = promptedInput("Would you like to play again");
         if(decision.equals("y")) startGame();
+    }
+
+    public static void computerDecisions(){
+        //for now i will randomly generate computers decisions
+
     }
 }
