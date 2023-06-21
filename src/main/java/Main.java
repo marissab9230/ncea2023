@@ -2,7 +2,6 @@ import java.util.Scanner;
 
 public class Main {
     static Scanner inputStream = new Scanner(System.in);
-
     static int minNumberOfRounds = 5;
     static int maxNumberOfRounds = 10;
     static int numberOfRounds;
@@ -10,7 +9,7 @@ public class Main {
     static int computerScore;
     static String[] userMoves;
     static String[] computerMoves;
-    static String gameInstructions; //description of the game and instructions , to-do
+    static String gameInstructions="game instructions"; //description of the game and instructions , to-do
     static int roundNumber;
     static String[] validMoves = {"c", "cooperate", "d", "defect"};
     static String[] yesNoResponse = {"y", "yes", "n", "no"};
@@ -53,9 +52,9 @@ public class Main {
         roundNumber++;
     }
 
-    public static void settings(){
-        //print settings options and allow user to adjust language, input options
+    public static void settings(){ //print settings options and allow user to adjust language, input options
         System.out.println();//setting instructions
+        //TO-DO: all settings code
     }
 
     public static String promptedInput(String prompt){ //
@@ -65,7 +64,9 @@ public class Main {
         input=input.toLowerCase();
 
         //check the user input against valid inputs
-        if(needsYesOrNo){ //only runs if we want a yes or no
+
+        //only runs if we want a yes or no
+        if(needsYesOrNo){
             for(int i=0; i<yesNoResponse.length; i++){
                 if(input.equals(yesNoResponse[i])){
                     //return "y" for yes or "n" for no regardless of the user input; this should make things easier
@@ -89,8 +90,10 @@ public class Main {
                 else return validMoves[i];
             }
         }
+
         //if at any point user wants to access settings/instructions
         if(input.equals("s")||input.equals("settings")) settings();
+
         return null;//need to sort out invalid inputs
     }
 
@@ -107,6 +110,7 @@ public class Main {
 
     public static void computerDecisions(){
         //for now i will randomly generate computers decisions
-
+        if(Math.random()<=0.5) computerMoves[roundNumber] = "c";
+        else computerMoves[roundNumber] = "d";
     }
 }
