@@ -36,16 +36,21 @@ public class Main {
     }
 
     public static void round(){ //this method runs each round
+        System.out.println("round " + (roundNumber+1));
         userMoves[roundNumber]=promptedInput("do you cooperate or defect"); //prompt user, take in and log users move
+        computerDecisions();
+
+        boolean playerCooperates = (userMoves[roundNumber].equals("c"));
+        boolean computerCooperates = (computerMoves[roundNumber].equals("c"));
 
         //determine outcome of round
-        if(userMoves[roundNumber].equals("c") && computerMoves[roundNumber].equals("c")){
+        if(playerCooperates && computerCooperates){
             System.out.println("you both cooperated");
-        }if(userMoves[roundNumber].equals("c") && computerMoves[roundNumber].equals("d")){
+        }if(playerCooperates && !computerCooperates){
             System.out.println("they defected");
-        }if(userMoves[roundNumber].equals("d") && computerMoves[roundNumber].equals("c")){
+        }if(!playerCooperates && computerCooperates){
             System.out.println("they cooperated");
-        }if(userMoves[roundNumber].equals("d") && computerMoves[roundNumber].equals("d")){
+        }if(!playerCooperates && !computerCooperates){
             System.out.println("you both defected");
         }
 
