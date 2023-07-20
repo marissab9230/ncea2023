@@ -15,6 +15,7 @@ public class Main {
     static String[] validMoves = {"c", "cooperate", "d", "defect"};
     static String[] yesNoResponse = {"y", "yes", "n", "no"};
     static String[] gameModes = {"m", "multiplayer", "c", "computer"};
+    static String[] continueResponses = {"c", "continue"};
     static boolean needsYesOrNo=false;
     static String playerOneName;
     static String playerTwoName;
@@ -44,7 +45,7 @@ public class Main {
 
         //setting game mode
         gameMode = getPromptedInput("would you like to play against the computer or multiplayer?", "startGame");
-        while(gameMode.equals(null)) { //invalid input
+        while(gameMode==null) { //invalid input
             System.out.println("invalid input");
             gameMode = getPromptedInput("would you like to play against the computer or multiplayer?", "startGame");
         }
@@ -64,6 +65,8 @@ public class Main {
     }
 
     public static void round(){ //this method runs each round
+        clearTerminal();
+
         System.out.println("round " + (roundNumber+1));
 
         if (gameMode.equals("m")) {
@@ -73,12 +76,28 @@ public class Main {
                 System.out.println("input invalid");
                 playerOneMoves[roundNumber]= getPromptedInput((playerOneName+ ", do you cooperate or defect?"), "round");
             }
-            //NEED TO CLEAR SCREEN BETWEEN THESE
+
+            clearTerminal();
+
             //ask player two for their decision
             playerTwoMoves[roundNumber]= getPromptedInput((playerTwoName+ ", do you cooperate or defect?"), "round"); //prompt user, take in and log users move
             while(playerTwoMoves[roundNumber]==null){ //if input is invalid, ask again
                 System.out.println("input invalid");
                 playerTwoMoves[roundNumber]= getPromptedInput((playerTwoName+ ", do you cooperate or defect?"), "round");
+            }
+
+            boolean playerOneCooperates = (playerOneMoves[roundNumber].equals("c"));
+            boolean playerTwoCooperates = (playerTwoMoves[roundNumber].equals("c"));
+
+            //determine outcome of round
+            if(playerOneCooperates && playerTwoCooperates){
+                System.out.println("you both cooperated");
+            }if(playerOneCooperates && !playerTwoCooperates){
+                System.out.println(playerOneName + " cooperated, " + playerTwoName + " defected.");
+            }if(!playerOneCooperates && playerTwoCooperates){
+                System.out.println(playerTwoName + " cooperated, " + playerOneName + " defected.");
+            }if(!playerOneCooperates && !playerTwoCooperates){
+                System.out.println("you both defected");
             }
 
         }else{
@@ -105,13 +124,29 @@ public class Main {
             }
         }
 
-
+        waitToContinue();
 
         roundNumber++;
     }
 
     public static void settings(){ //print settings options and allow user to adjust language, input options
         //TO-DO: all settings code
+    }
+
+    public static void waitToContinue(){
+        //pauses game until user says to continue
+
+        System.out.println("'c' to continue");
+
+        while(true){
+            String input = inputStream.nextLine();
+            input=input.toLowerCase();
+            for (String continueRespons : continueResponses) {
+                if (input.equals(continueRespons)) {
+                    break;
+                }
+            }
+        }
     }
 
     public static String getPromptedInput(String prompt, String methodCalledFrom){ //outputs text and returns the response
@@ -175,7 +210,7 @@ public class Main {
         needsYesOrNo=true;
         String decision = getPromptedInput("Would you like to play again", "endGame");
         if(decision.equals("y")) startGame();
-        while (decision.equals(null)){ //invalid inputs
+        while (decision==null){ //invalid inputs
             System.out.println("input invalid");
             needsYesOrNo=true;
             decision = getPromptedInput("Would you like to play again", "endGame");
@@ -186,5 +221,11 @@ public class Main {
         //for now i will randomly generate computers decisions
         if(Math.random()<=0.5) computerMoves[roundNumber] = "c";
         else computerMoves[roundNumber] = "d";
+    }
+
+    public static void clearTerminal(){
+        //clear terminal (doesn't work here)
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 }
