@@ -1,3 +1,8 @@
+/*
+    Name: Marissa Burnette
+
+    Date: 24/07/23
+*/
 import java.util.Scanner;
 
 public class Main {
@@ -5,7 +10,8 @@ public class Main {
     static int minNumberOfRounds = 5;
     static int maxNumberOfRounds = 10;
     static int numberOfRounds;
-    static int userScore;
+    static int playerOneScore;
+    static int playerTwoScore;
     static int computerScore;
     static String[] playerOneMoves;
     static String[] playerTwoMoves;
@@ -20,7 +26,8 @@ public class Main {
     static String playerOneName;
     static String playerTwoName;
     static String gameMode;
-
+    static String input;
+    static String decision;
     /*public enum GameMode {
         MULTIPLAYER,
         COMPUTER
@@ -32,8 +39,9 @@ public class Main {
     }
 
     public static void startGame(){ //this starts the game
+
         //resets relevant variables
-        userScore = 0;
+        playerOneScore = 0;
         computerScore = 0;
         numberOfRounds = (int) Math.floor(Math.random()*(maxNumberOfRounds - minNumberOfRounds + 1) + minNumberOfRounds);
         playerOneMoves = new String[numberOfRounds];
@@ -58,6 +66,7 @@ public class Main {
             playerTwoName=inputStream.nextLine();
         }
 
+        //runs the method for each round
         for(int i=0; i<numberOfRounds; i++) {
             round();
         }
@@ -130,7 +139,7 @@ public class Main {
     }
 
     public static void settings(){ //print settings options and allow user to adjust language, input options
-        //TO-DO: all settings code
+        //TODO: all settings code
     }
 
     public static void waitToContinue(){
@@ -152,8 +161,8 @@ public class Main {
     public static String getPromptedInput(String prompt, String methodCalledFrom){ //outputs text and returns the response
         //print prompt and take in input
         System.out.println(prompt);
-        String input = inputStream.nextLine();
-        input=input.toLowerCase();
+        input = inputStream.nextLine();
+        input = input.toLowerCase();
 
         //check the user input against valid inputs
 
@@ -203,14 +212,21 @@ public class Main {
 
     public static void endGame(){
         //runs when a game ends. should: announce score, announce victor, announce overall score including past games, offer option to play again or quit
-        if(userScore>computerScore) System.out.println("Congratulations, you win! Your score was " + userScore + ", I scored "+ computerScore+ "!");//could add more possible answers
-        if(computerScore>userScore) System.out.println("You lose! Your score was " + userScore + ", I scored "+ computerScore+ "!");
-        else System.out.println("It's a tie! We both scored "+ userScore);
+        if(gameMode.equals("c")) { //when playing against computer checks computerScore vs playerOneScore
+            if (playerOneScore > computerScore) System.out.println("Congratulations, you win! Your score was " + playerOneScore + ", I scored " + computerScore + "!");//could add more possible answers
+            if (computerScore > playerOneScore) System.out.println("You lose! Your score was " + playerOneScore + ", I scored " + computerScore + "!");
+            else System.out.println("It's a tie! We both scored " + playerOneScore);
+        }if(gameMode.equals("m")){ //when playing multiplayer checks playerOneScore vs playerTwoScore
+            if (playerOneScore > playerTwoScore) System.out.println(playerOneName + " wins!");//could add more possible answers
+            if (playerTwoScore > playerOneScore) System.out.println(playerTwoName + " wins!");
+            else System.out.println("It's a tie! You both scored " + playerOneScore);
+        }
 
+        //ask if they would like to play again
         needsYesOrNo=true;
-        String decision = getPromptedInput("Would you like to play again", "endGame");
+        decision = getPromptedInput("Would you like to play again", "endGame");
         if(decision.equals("y")) startGame();
-        while (decision==null){ //invalid inputs
+        while (decision == null){ //invalid inputs
             System.out.println("input invalid");
             needsYesOrNo=true;
             decision = getPromptedInput("Would you like to play again", "endGame");
