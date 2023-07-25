@@ -1,8 +1,10 @@
-/*
+/**
     Name: Marissa Burnette
 
     Date: 24/07/23
-*/
+**/
+import java.awt.*;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -18,6 +20,7 @@ public class Main {
     static String[] computerMoves;
     static String gameInstructions="game instructions"; //description of the game and instructions , to-do
     static int roundNumber;
+    //the following arrays will be formatted {abbreviated option 1, unabbreviated option 1, abbreviated option 2, unabbreviated option 2, ...}
     static String[] validMoves = {"c", "cooperate", "d", "defect"};
     static String[] yesNoResponse = {"y", "yes", "n", "no"};
     static String[] gameModes = {"m", "multiplayer", "c", "computer"};
@@ -64,12 +67,14 @@ public class Main {
             playerOneName=inputStream.nextLine();
             System.out.println("player two, what is your name?");
             playerTwoName=inputStream.nextLine();
+            if(playerOneName.toLowerCase().equals("thomas")||playerTwoName.toLowerCase().equals("thomas")) System.out.println("Thomas, my favourite person");
         }
 
         //runs the method for each round
         for(int i=0; i<numberOfRounds; i++) {
             round();
         }
+
         endGame();
     }
 
@@ -139,7 +144,7 @@ public class Main {
     }
 
     public static void settings(){ //print settings options and allow user to adjust language, input options
-        //TODO: all settings code
+
     }
 
     public static void waitToContinue(){
@@ -147,15 +152,11 @@ public class Main {
 
         System.out.println("'c' to continue");
 
-        while(true){
-            String input = inputStream.nextLine();
-            input=input.toLowerCase();
-            for (String continueRespons : continueResponses) {
-                if (input.equals(continueRespons)) {
-                    break;
-                }
-            }
-        }
+        do {
+            input = inputStream.nextLine();
+            input = input.toLowerCase();
+            if(!Arrays.asList(continueResponses).contains(input)) System.out.println("invalid input");
+        }while(!Arrays.asList(continueResponses).contains(input));
     }
 
     public static String getPromptedInput(String prompt, String methodCalledFrom){ //outputs text and returns the response
@@ -168,17 +169,12 @@ public class Main {
 
         //only runs if we want a yes or no
         if(needsYesOrNo){
+            needsYesOrNo=false;
             for(int i=0; i<yesNoResponse.length; i++){
                 if(input.equals(yesNoResponse[i])){
-                    //return "y" for yes or "n" for no regardless of the user input; this should make things easier
-                    if(i % 2 == 1){
-                        needsYesOrNo=false;
-                        return yesNoResponse[i-1];
-                    }
-                    else{
-                        needsYesOrNo=false;
-                        return yesNoResponse[i];
-                    }
+                    //return "y" for yes or "n" for no regardless of the user input
+                    if(i % 2 == 1) return yesNoResponse[i-1];
+                    else return yesNoResponse[i];
                 }
             }
         }
@@ -187,13 +183,14 @@ public class Main {
         if(methodCalledFrom.equals("round")) {
             for (int i = 0; i < validMoves.length; i++) {
                 if (input.equals(validMoves[i])) {
-                    //return "c" for cooperate or "d" for defect regardless of the user input; this should make things easier
+                    //return "c" for cooperate or "d" for defect regardless of the user input
                     if (i % 2 == 1) return validMoves[i - 1];
                     else return validMoves[i];
                 }
             }
         }
 
+        //for mode decisions
         if(methodCalledFrom.equals("startGame")){
             for (int i = 0; i < gameModes.length; i++) {
                 if (input.equals(gameModes[i])) {
