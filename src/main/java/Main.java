@@ -45,6 +45,7 @@ public class Main {
 
         //resets relevant variables
         playerOneScore = 0;
+        playerTwoScore=0;
         computerScore = 0;
         numberOfRounds = (int) Math.floor(Math.random()*(maxNumberOfRounds - minNumberOfRounds + 1) + minNumberOfRounds);
         playerOneMoves = new String[numberOfRounds];
@@ -144,6 +145,7 @@ public class Main {
     }
 
     public static void settings(){ //print settings options and allow user to adjust language, input options
+        System.out.println("settings");
 
     }
 
