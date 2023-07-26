@@ -31,6 +31,7 @@ public class Main {
     static String gameMode;
     static String input;
     static String decision;
+
     /*public enum GameMode {
         MULTIPLAYER,
         COMPUTER
@@ -233,9 +234,14 @@ public class Main {
     }
 
     public static void computerDecisions(){
-        //for now i will randomly generate computers decisions
-        if(Math.random()<=0.5) computerMoves[roundNumber] = "c";
-        else computerMoves[roundNumber] = "d";
+        double randomNumber=Math.random();
+
+        //generalised to any number of possible answers
+        for(int i=1; i<=validMoves.length/2; i++){ //checks every answer
+            if(randomNumber<2.0D*i/validMoves.length){
+                computerMoves[roundNumber]=validMoves[2*i-2];
+            }
+        }
     }
 
     public static void clearTerminal(){
