@@ -9,8 +9,8 @@ import java.util.Scanner;
 
 public class Main {
     static Scanner inputStream = new Scanner(System.in);
-    static int minNumberOfRounds = 5;
-    static int maxNumberOfRounds = 10;
+    static final int minNumberOfRounds = 5;
+    static final int maxNumberOfRounds = 10;
     static int numberOfRounds;
     static int playerOneScore;
     static int playerTwoScore;
@@ -18,13 +18,13 @@ public class Main {
     static String[] playerOneMoves;
     static String[] playerTwoMoves;
     static String[] computerMoves;
-    static String gameInstructions="game instructions"; //description of the game and instructions , to-do
+    static final String gameInstructions="game instructions"; //description of the game and instructions , to-do
     static int roundNumber;
     //the following arrays will be formatted {abbreviated option 1, unabbreviated option 1, abbreviated option 2, unabbreviated option 2, ...}
-    static String[] validMoves = {"c", "cooperate", "d", "defect"};
-    static String[] yesNoResponse = {"y", "yes", "n", "no"};
-    static String[] gameModes = {"m", "multiplayer", "c", "computer"};
-    static String[] continueResponses = {"c", "continue"};
+    static final String[] validMoves = {"c", "cooperate", "d", "defect"};
+    static final String[] yesNoResponse = {"y", "yes", "n", "no"};
+    static final String[] gameModes = {"m", "multiplayer", "c", "computer"};
+    static final String[] continueResponses = {"c", "continue"};
     static boolean needsYesOrNo=false;
     static String playerOneName;
     static String playerTwoName;
@@ -170,42 +170,20 @@ public class Main {
 
         //check the user input against valid inputs
 
-        //only runs if we want a yes or no
+        //if at any point user wants to access settings/instructions
+        if(input.equals("s")||input.equals("settings")) settings();
+
+        //only runs if we want a yes or no. checks if
         if(needsYesOrNo){
             needsYesOrNo=false;
-            for(int i=0; i<yesNoResponse.length; i++){
-                if(input.equals(yesNoResponse[i])){
-                    //return "y" for yes or "n" for no regardless of the user input
-                    if(i % 2 == 1) return yesNoResponse[i-1];
-                    else return yesNoResponse[i];
-                }
-            }
+            return searchArray(input, yesNoResponse);
         }
 
         //for users decisions
-        if(methodCalledFrom.equals("round")) {
-            for (int i = 0; i < validMoves.length; i++) {
-                if (input.equals(validMoves[i])) {
-                    //return "c" for cooperate or "d" for defect regardless of the user input
-                    if (i % 2 == 1) return validMoves[i - 1];
-                    else return validMoves[i];
-                }
-            }
-        }
+        if(methodCalledFrom.equals("round")) return searchArray(input, validMoves);
 
         //for mode decisions
-        if(methodCalledFrom.equals("startGame")){
-            for (int i = 0; i < gameModes.length; i++) {
-                if (input.equals(gameModes[i])) {
-                    //return "m" for multiplayer or "c" for computer regardless of the user input; this should make things easier
-                    if (i % 2 == 1) return gameModes[i - 1];
-                    else return gameModes[i];
-                }
-            }
-        }
-
-        //if at any point user wants to access settings/instructions
-        if(input.equals("s")||input.equals("settings")) settings();
+        if(methodCalledFrom.equals("startGame")) return searchArray(input, gameModes);
 
         return null;
     }
@@ -236,8 +214,7 @@ public class Main {
     public static void computerDecisions(){
         double randomNumber=Math.random();
 
-        //generalised to any number of possible answers
-        for(int i=1; i<=validMoves.length/2; i++){ //checks every answer
+        for(int i=1; i<=validMoves.length/2; i++){ //randomly selects a move
             if(randomNumber<2.0D*i/validMoves.length){
                 computerMoves[roundNumber]=validMoves[2*i-2];
             }
@@ -248,5 +225,17 @@ public class Main {
         //clear terminal (doesn't work here)
         System.out.print("\033[H\033[2J");
         System.out.flush();
+    }
+
+    public static String searchArray(String input, String[] array ){
+        //checks if the input is in the array. if so returns the users decision, always in the abbreviated form
+        for(int i=0; i<array.length; i++){//checks against each element of the array
+            if(input.equals(array[i])){
+                //return the abbreviated input
+                if (i % 2 == 1) return array[i - 1];
+                else return array[i];
+            }
+        }
+        return null;
     }
 }
