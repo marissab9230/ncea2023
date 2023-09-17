@@ -8,20 +8,20 @@ import java.util.Scanner;
 
 public class Main {
     static Scanner inputStream = new Scanner(System.in);
-    static final int minNumberOfRounds = 5;
-    static final int maxNumberOfRounds = 10;
+    static final int MIN_NUMBER_OF_ROUNDS = 5;
+    static final int MAX_NUMBER_OF_ROUNDS = 10;
     //the following arrays will be formatted {abbreviated option 1, unabbreviated option 1, abbreviated option 2, unabbreviated option 2, ...}
     static final String[] validMoves = {"c", "cooperate", "d", "defect"};
-    static final String[] yesNoResponse = {"y", "yes", "n", "no"};
+    static final String[] yesNoResponses = {"y", "yes", "n", "no"};
     static final String[] gameModes = {"m", "multiplayer", "c", "computer"};
     static final String[] continueResponses = {"c", "continue"};
+    static final String GAME_INSTRUCTIONS ="game instructions"; //description of the game and instructions , to-do
     static int playerOneScore;
     static int playerTwoScore;
     static int computerScore;
     static String[] playerOneMoves;
     static String[] playerTwoMoves;
     static String[] computerMoves;
-    static final String gameInstructions="game instructions"; //description of the game and instructions , to-do
     static int roundNumber;
     static boolean needsYesOrNo=false;
     static String playerOneName;
@@ -39,13 +39,13 @@ public class Main {
         playerOneScore = 0;
         playerTwoScore=0;
         computerScore = 0;
-        int numberOfRounds = (int) Math.floor(Math.random()*(maxNumberOfRounds - minNumberOfRounds + 1) + minNumberOfRounds);
+        int numberOfRounds = (int) Math.floor(Math.random()*(MAX_NUMBER_OF_ROUNDS - MIN_NUMBER_OF_ROUNDS + 1) + MIN_NUMBER_OF_ROUNDS);
         playerOneMoves = new String[numberOfRounds];
         playerTwoMoves = new String[numberOfRounds];
         computerMoves = new String[numberOfRounds];
         roundNumber=0;
 
-        System.out.println(gameInstructions); //prints game instructions
+        System.out.println(GAME_INSTRUCTIONS); //prints game instructions
 
         //ask user to set game mode
         gameMode = getPromptedInput("would you like to play against the computer or multiplayer?", "startGame", "if you would like to play against the computer, say 'computer' or 'c'. if you would like to play multiplayer, say 'multiplayer' or 'm'");
@@ -81,11 +81,11 @@ public class Main {
             playerTwoMoves[roundNumber]= getPromptedInput((playerTwoName+ ", do you cooperate or defect?"), "round", "instructions (todo)"); //prompt user, take in and log users move
             clearTerminal();
             //determine and announce who won the round
-            determineWinner((playerOneMoves[roundNumber].equals("c")), playerOneName, (playerTwoMoves[roundNumber].equals("c")), playerTwoName);
+            determineRoundWinner((playerOneMoves[roundNumber].equals("c")), playerOneName, (playerTwoMoves[roundNumber].equals("c")), playerTwoName);
         }else{ //round when playing against computer
             playerOneMoves[roundNumber]= getPromptedInput("do you cooperate or defect", "round", "instructions (todo)"); //prompt user, take in and log users move
             computerDecisions(); //gets computer to decide move
-            determineWinner((playerOneMoves[roundNumber].equals("c")), "you", (computerMoves[roundNumber].equals("c")), "they");
+            determineRoundWinner((playerOneMoves[roundNumber].equals("c")), "you", (computerMoves[roundNumber].equals("c")), "they");
         }
         waitToContinue();
         roundNumber++;
@@ -93,10 +93,10 @@ public class Main {
 
     public static void settings(){ //print settings options and allow user to adjust language, input options
         System.out.println("settings");
-
+        //todo all this
     }
 
-    public static String getPromptedInput(String prompt, String methodCalledFrom, String invalidInputInstructions){ //outputs text and returns the response
+    public static String getPromptedInput(String prompt, String methodCalledFrom, String invalidInputInstructions){ //outputs text and reliably returns the response
         String input;
         String output = null;
         do {
@@ -106,24 +106,14 @@ public class Main {
             input = input.toLowerCase();
 
             //check the user input against valid inputs
-
-            //if at any point user wants to access settings/instructions
-            if (input.equals("s") || input.equals("settings")) settings();
-
-            //only runs if we want a yes or no
-            if (needsYesOrNo) {
+            if (input.equals("s") || input.equals("settings")) settings(); //if at any point user wants to access settings/instructions
+            if (needsYesOrNo) {  //only runs if we want a yes or no
                 needsYesOrNo = false;
-                output = checkArray(input, yesNoResponse);
+                output = checkArray(input, yesNoResponses);
             }
-
-            //for users decisions
-            if (methodCalledFrom.equals("round")) output = checkArray(input, validMoves);
-
-            //for mode decisions
-            if (methodCalledFrom.equals("startGame")) output = checkArray(input, gameModes);
-
-            //if the input is invalid, explain to the user this is the case then the loop repeats
-            if(output==null){
+            if (methodCalledFrom.equals("round")) output = checkArray(input, validMoves); //for users decisions
+            if (methodCalledFrom.equals("startGame")) output = checkArray(input, gameModes); //for mode decisions
+            if(output==null){ //if the input is invalid, explain to the user this is the case then the loop repeats
                 System.out.println("invalid input");
                 System.out.println(invalidInputInstructions);
             }
@@ -159,7 +149,7 @@ public class Main {
     }
 
     public static void clearTerminal(){
-        //clear terminal (doesn't work here)
+        //clear terminal (doesn't work in intellij)
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
@@ -176,7 +166,7 @@ public class Main {
         return null;
     }
 
-    public static void determineWinner(boolean playerACooperates, String playerAName, boolean playerBCooperates, String playerBName){
+    public static void determineRoundWinner(boolean playerACooperates, String playerAName, boolean playerBCooperates, String playerBName){ //determines the winner of a round
         if(playerACooperates && playerBCooperates){
             System.out.println("you both cooperated");
         }if(playerACooperates && !playerBCooperates){
