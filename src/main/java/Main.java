@@ -11,10 +11,10 @@ public class Main {
     static final int MIN_NUMBER_OF_ROUNDS = 5;
     static final int MAX_NUMBER_OF_ROUNDS = 10;
     //the following arrays will be formatted {abbreviated option 1, unabbreviated option 1, abbreviated option 2, unabbreviated option 2, ...}
-    static final String[] validMoves = {"c", "cooperate", "d", "defect"};
-    static final String[] yesNoResponses = {"y", "yes", "n", "no"};
-    static final String[] gameModes = {"m", "multiplayer", "c", "computer"};
-    static final String[] continueResponses = {"c", "continue"};
+    static final String[] VALID_MOVES = {"c", "cooperate", "d", "defect"};
+    static final String[] YES_NO_RESPONSES = {"y", "yes", "n", "no"};
+    static final String[] GAME_MODES = {"m", "multiplayer", "c", "computer"};
+    static final String[] CONTINUE_RESPONSES = {"c", "continue"};
     static final String GAME_INSTRUCTIONS ="game instructions"; //description of the game and instructions , to-do
     static int playerOneScore;
     static int playerTwoScore;
@@ -34,7 +34,6 @@ public class Main {
     }
 
     public static void startGame(){ //this starts the game
-
         //resets relevant variables
         playerOneScore = 0;
         playerTwoScore=0;
@@ -52,11 +51,11 @@ public class Main {
 
         //ask for players names when multiplayer
         if(gameMode.equals("m")){
-            //asks for player ones name
+            //asks for and take in player ones name
             System.out.println("player one, what is your name?");
             playerOneName=inputStream.nextLine();
 
-            //aks for player twos name
+            //aks for and take in player twos name
             System.out.println("player two, what is your name?");
             playerTwoName=inputStream.nextLine();
             if(playerOneName.toLowerCase().equals("thomas")||playerTwoName.toLowerCase().equals("thomas")) System.out.println("Thomas, my favourite person");
@@ -109,15 +108,15 @@ public class Main {
             if (input.equals("s") || input.equals("settings")) settings(); //if at any point user wants to access settings/instructions
             if (needsYesOrNo) {  //only runs if we want a yes or no
                 needsYesOrNo = false;
-                output = checkArray(input, yesNoResponses);
+                output = findInArray(input, YES_NO_RESPONSES);
             }
-            if (methodCalledFrom.equals("round")) output = checkArray(input, validMoves); //for users decisions
-            if (methodCalledFrom.equals("startGame")) output = checkArray(input, gameModes); //for mode decisions
-            if(output==null){ //if the input is invalid, explain to the user this is the case then the loop repeats
+            if (methodCalledFrom.equals("round")) output = findInArray(input, VALID_MOVES); //for users decisions
+            if (methodCalledFrom.equals("startGame")) output = findInArray(input, GAME_MODES); //for mode decisions
+            if(output==null){ //if the input is invalid, explain to the user this is the case
                 System.out.println("invalid input");
                 System.out.println(invalidInputInstructions);
             }
-        }while(output==null);
+        }while(output==null); //if they dont have a valid input, ask again
         return output;
     }
 
@@ -141,9 +140,9 @@ public class Main {
 
     public static void computerDecisions(){
         double randomNumber=Math.random();
-        for(int i=1; i<=validMoves.length/2; i++){ //randomly selects a move
-            if(randomNumber<2.0D*i/validMoves.length){
-                computerMoves[roundNumber]=validMoves[2*i-2];
+        for(int i = 1; i<= VALID_MOVES.length/2; i++){ //randomly selects a move
+            if(randomNumber<2.0D*i/ VALID_MOVES.length){
+                computerMoves[roundNumber]= VALID_MOVES[2*i-2];
             }
         }
     }
@@ -154,7 +153,7 @@ public class Main {
         System.out.flush();
     }
 
-    public static String checkArray(String input, String[] array ){
+    public static String findInArray(String input, String[] array ){
         //checks if the input is in the array. if so returns the users decision, always in the abbreviated form
         for(int i=0; i<array.length; i++){//checks against each element of the array
             if(input.equals(array[i])){
@@ -180,15 +179,14 @@ public class Main {
 
     public static void waitToContinue(){
         //pauses game until user says to continue
-
         System.out.println("'c' to continue");
         String input;
 
-        //asks user for
+        //waits for valid response
         do {
             input = inputStream.nextLine();
             input = input.toLowerCase();
-            if(!Arrays.asList(continueResponses).contains(input)) System.out.println("invalid input"); //if input is invalid, inform the user then wait for another response
-        }while(!Arrays.asList(continueResponses).contains(input));
+            if(!Arrays.asList(CONTINUE_RESPONSES).contains(input)) System.out.println("invalid input"); //if input is invalid, inform the user then wait for another response
+        }while(!Arrays.asList(CONTINUE_RESPONSES).contains(input));
     }
 }
