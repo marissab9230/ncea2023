@@ -24,9 +24,10 @@ public class Main {
     static String[] playerOneMoves;
     static String[] playerTwoMoves;
     static String[] computerMoves;
+    static String[] roundWinners;
     static int roundNumber;
-    static String playerOneName;
-    static String playerTwoName;
+    static String playerOneName="";
+    static String playerTwoName="";
     static String gameMode;
 
 
@@ -43,17 +44,34 @@ public class Main {
         playerOneMoves = new String[numberOfRounds];
         playerTwoMoves = new String[numberOfRounds];
         computerMoves = new String[numberOfRounds];
+        roundWinners = new String[numberOfRounds];
         roundNumber=0;
 
         System.out.println(GAME_INSTRUCTIONS); //prints game instructions
 
         //ask user to set game mode
-        gameMode = getPromptedInput("would you like to play against the computer or multiplayer?", GAME_MODES, "if you would like to play against the computer, say 'computer' or 'c'. if you would like to play multiplayer, say 'multiplayer' or 'm'");
+        gameMode = getPromptedInput("would you like to play against the computer or multiplayer?", GAME_MODES);
 
         //ask for players names when multiplayer
         if(gameMode.equals("m")){
-            do {
-                if(playerOneName==playerTwoName) System.out.println("please choose different names");
+            //ask for and get the name of each player
+            System.out.println("Player one, what is your name?");
+            playerOneName = inputStream.nextLine();
+            System.out.println("Player two, what is your name?");
+            playerTwoName = inputStream.nextLine();
+
+            while(playerOneName.equals(playerTwoName)){ //if they select, the same names, explain the issue and ask again.
+                System.out.println("Please choose different names");
+                //asks for and take in player ones name
+                System.out.println("Player one, what is your name?");
+                playerOneName = inputStream.nextLine();
+
+                //aks for and take in player twos name
+                System.out.println("Player two, what is your name?");
+                playerTwoName = inputStream.nextLine();
+            }
+            /*do {
+                if(playerOneName.equals(playerTwoName)) System.out.println("please choose different names");
                 //asks for and take in player ones name
                 System.out.println("player one, what is your name?");
                 playerOneName = inputStream.nextLine();
@@ -61,8 +79,8 @@ public class Main {
                 //aks for and take in player twos name
                 System.out.println("player two, what is your name?");
                 playerTwoName = inputStream.nextLine();
-            }while(playerOneName==playerTwoName);
-            if(playerOneName.toLowerCase().equals("thomas")||playerTwoName.toLowerCase().equals("thomas")) System.out.println("Thomas, my favourite person");
+            }while(playerOneName.equals(playerTwoName));
+             */
         }
 
         //runs the method for each round
@@ -75,25 +93,41 @@ public class Main {
 
     public static void round() { //this method runs each round
         if (gameMode.equals("m")){
-            getPromptedInput("Would you like to continue", YES_RESPONSES,"say 'yes' or 'y' if you would like to continue");
+            getPromptedInput("Would you like to continue", YES_RESPONSES;
             clearTerminal();
         }
         System.out.println("round " + (roundNumber+1));
         if (gameMode.equals("m")) { //round when multiplayer
             //ask player one for their decision
-            playerOneMoves[roundNumber]= getPromptedInput((playerOneName+ ", do you cooperate or defect?"), VALID_MOVES, "to cooperate: 'cooperate', 'c'. to defect 'defect', 'd'."); //prompt user, take in and log users move
+            playerOneMoves[roundNumber]= getPromptedInput((playerOneName+ ", do you cooperate or defect?"), VALID_MOVES); //prompt user, take in and log users move
             clearTerminal();
             //ask player two for their decision
-            playerTwoMoves[roundNumber]= getPromptedInput((playerTwoName+ ", do you cooperate or defect?"), VALID_MOVES, "instructions (todo)"); //prompt user, take in and log users move
+            playerTwoMoves[roundNumber]= getPromptedInput((playerTwoName+ ", do you cooperate or defect?"), VALID_MOVES); //prompt user, take in and log users move
             clearTerminal();
             //determine and announce who won the round
             determineRoundWinner((playerOneMoves[roundNumber].equals("c")), playerOneName, (playerTwoMoves[roundNumber].equals("c")), playerTwoName);
         }else{ //round when playing against computer
-            playerOneMoves[roundNumber]= getPromptedInput("do you cooperate or defect", VALID_MOVES, "instructions (todo)"); //prompt user, take in and log users move
+            playerOneMoves[roundNumber]= getPromptedInput("do you cooperate or defect", VALID_MOVES); //prompt user, take in and log users move
             computerDecisions(); //gets computer to decide move
             determineRoundWinner((playerOneMoves[roundNumber].equals("c")), "you", (computerMoves[roundNumber].equals("c")), "they");
+            awardRoundScore();
         }
         roundNumber++;
+    }
+
+    public static void awardRoundScore(boolean playerACooperates, boolean playerBCooperates) {
+        if(gameMode.equals("m")){
+            if (playerOneMoves[roundNumber].equals("c")
+        }
+        if(playerACooperates && playerBCooperates){
+
+        }if(playerACooperates && !playerBCooperates){
+            System.out.println(playerAName + " cooperated, " + playerBName + " defected.");
+        }if(!playerACooperates && playerBCooperates){
+            System.out.println(playerBName + " cooperated, " + playerAName + " defected.");
+        }if(!playerACooperates && !playerBCooperates){
+            System.out.println("you both defected");
+        }
     }
 
     public static void settings(){ //print settings options and allow user to adjust language, input options
@@ -101,14 +135,22 @@ public class Main {
         //todo all this
     }
 
-    public static String getPromptedInput(String prompt, String[] validResponses, String invalidInputInstructions){ //outputs text and reliably returns the response
+    public static String getPromptedInput(String prompt, String[] validResponses){ //outputs text and reliably returns the response
         String input = "";
         String output = "";
         do {
-            if(output.equals("")) System.out.println(invalidInputInstructions); //if they've already inputted something they shouldn't, explain that
             System.out.println(prompt); //print the prompt
             input = inputStream.nextLine().toLowerCase(); //take in the input
             output=findInArray(input, validResponses); //check if the input is a valid response, if so sets output equal to their response, if else the output is null and it asks again
+            if(output.equals("")){
+                //if they've already inputted something they shouldn't, explain that
+                System.out.print("This input is not valid. Your valid responses are: ");
+
+                for(int i=0; i< validResponses.length; i++){ //print out all valid inputs
+                    if(i== (validResponses.length - 1)) System.out.println("or "  + validResponses[i]); //if its the last one don't use a comma after
+                    else System.out.print(validResponses[i] + ", ");
+                }
+            }
         }while(output.equals("")); //if they don't have a valid input, ask again
         return output;
     }
@@ -126,7 +168,7 @@ public class Main {
         }
 
         //ask if they would like to play again
-        String decision = getPromptedInput("Would you like to play again", YES_NO_RESPONSES, "invalid input instructions (to do)");
+        String decision = getPromptedInput("Would you like to play again", YES_NO_RESPONSES);
         if(decision.equals("y")) startGame();
     }
 
