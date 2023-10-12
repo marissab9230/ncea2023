@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Scanner;
 
-
 public class Main {
     static Scanner inputStream = new Scanner(System.in);
     static final int MIN_NUMBER_OF_ROUNDS = 5;
@@ -28,7 +27,6 @@ public class Main {
     static String playerOneName;
     static String playerTwoName;
     static String gameMode;
-
 
     public static void main(String args[]){
         startGame();
@@ -92,8 +90,8 @@ public class Main {
     }
 
     public static String getPromptedInput(String prompt, String[] validResponses){ //outputs text and reliably returns the response
-        String input = "";
-        String output = "";
+        String input;
+        String output;
         do {
             System.out.println(prompt); //print the prompt
             input = inputStream.nextLine().toLowerCase(); //take in the input
