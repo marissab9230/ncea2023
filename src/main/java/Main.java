@@ -1,7 +1,7 @@
 /**
     Name: Marissa Burnette
 
-    Date: 24/07/23
+    Date: 12/10/23
 **/
 import java.util.Arrays;
 import java.util.Objects;
@@ -17,17 +17,16 @@ public class Main {
     static final String[] YES_NO_RESPONSES = {"y", "yes", "n", "no"};
     static final String[] GAME_MODES = {"m", "multiplayer", "c", "computer"};
     static final String[] YES_RESPONSES = {"y", "yes"};
-    static final String GAME_INSTRUCTIONS ="game instructions"; //description of the game and instructions , to-do
+    static final String GAME_INSTRUCTIONS ="Welcome to the game-ified 'Prisoners Dilemma'. You and your partner-in-crime have been arrested. The police don't have enough evidence to convict either of you on the principal charge, so are interrogating both of you. You may choose to cooperate with your partner, and stick to your story, or you may defect and betray them. If you both cooperate, you will have one year added to your prison sentence. If you defect and your partner cooperates, you will have no added punishment, but your partner will have three years added - and vice-versa if they betray you and you stick to the story. If you both betray eachother, you will both have two years added to your sentences. ";
     static int playerOneScore;
     static int playerTwoScore;
     static int computerScore;
     static String[] playerOneMoves;
     static String[] playerTwoMoves;
     static String[] computerMoves;
-    static String[] roundWinners;
     static int roundNumber;
-    static String playerOneName="";
-    static String playerTwoName="";
+    static String playerOneName;
+    static String playerTwoName;
     static String gameMode;
 
 
@@ -44,59 +43,37 @@ public class Main {
         playerOneMoves = new String[numberOfRounds];
         playerTwoMoves = new String[numberOfRounds];
         computerMoves = new String[numberOfRounds];
-        roundWinners = new String[numberOfRounds];
         roundNumber=0;
 
         System.out.println(GAME_INSTRUCTIONS); //prints game instructions
 
         //ask user to set game mode
-        gameMode = getPromptedInput("would you like to play against the computer or multiplayer?", GAME_MODES);
+        gameMode = getPromptedInput("Would you like to play against the computer or multiplayer?", GAME_MODES);
 
         //ask for players names when multiplayer
         if(gameMode.equals("m")){
-            //ask for and get the name of each player
-            System.out.println("Player one, what is your name?");
-            playerOneName = inputStream.nextLine();
-            System.out.println("Player two, what is your name?");
-            playerTwoName = inputStream.nextLine();
-
-            while(playerOneName.equals(playerTwoName)){ //if they select, the same names, explain the issue and ask again.
-                System.out.println("Please choose different names");
-                //asks for and take in player ones name
+            do{
+                //ask for users names
                 System.out.println("Player one, what is your name?");
                 playerOneName = inputStream.nextLine();
-
-                //aks for and take in player twos name
                 System.out.println("Player two, what is your name?");
                 playerTwoName = inputStream.nextLine();
-            }
-            /*do {
-                if(playerOneName.equals(playerTwoName)) System.out.println("please choose different names");
-                //asks for and take in player ones name
-                System.out.println("player one, what is your name?");
-                playerOneName = inputStream.nextLine();
-
-                //aks for and take in player twos name
-                System.out.println("player two, what is your name?");
-                playerTwoName = inputStream.nextLine();
-            }while(playerOneName.equals(playerTwoName));
-             */
+                //if the names are the same, tell them to choose different names
+                if(playerOneName.equals(playerTwoName)) System.out.println("Please choose different names.");
+            }while(playerOneName.equals(playerTwoName)); //if they picked the same names, have them re-choose
         }
 
         //runs the method for each round
-        for(int i=0; i<numberOfRounds; i++) {
-            round();
-        }
+        for(int i=0; i<numberOfRounds; i++) round();
 
         endGame();
     }
 
     public static void round() { //this method runs each round
-        if (gameMode.equals("m")){
-            getPromptedInput("Would you like to continue", YES_RESPONSES;
-            clearTerminal();
-        }
-        System.out.println("round " + (roundNumber+1));
+        getPromptedInput("Would you like to continue", YES_RESPONSES);
+        clearTerminal();
+
+        System.out.println("Round " + (roundNumber+1));
         if (gameMode.equals("m")) { //round when multiplayer
             //ask player one for their decision
             playerOneMoves[roundNumber]= getPromptedInput((playerOneName+ ", do you cooperate or defect?"), VALID_MOVES); //prompt user, take in and log users move
@@ -110,29 +87,8 @@ public class Main {
             playerOneMoves[roundNumber]= getPromptedInput("do you cooperate or defect", VALID_MOVES); //prompt user, take in and log users move
             computerDecisions(); //gets computer to decide move
             determineRoundWinner((playerOneMoves[roundNumber].equals("c")), "you", (computerMoves[roundNumber].equals("c")), "they");
-            awardRoundScore();
         }
         roundNumber++;
-    }
-
-    public static void awardRoundScore(boolean playerACooperates, boolean playerBCooperates) {
-        if(gameMode.equals("m")){
-            if (playerOneMoves[roundNumber].equals("c")
-        }
-        if(playerACooperates && playerBCooperates){
-
-        }if(playerACooperates && !playerBCooperates){
-            System.out.println(playerAName + " cooperated, " + playerBName + " defected.");
-        }if(!playerACooperates && playerBCooperates){
-            System.out.println(playerBName + " cooperated, " + playerAName + " defected.");
-        }if(!playerACooperates && !playerBCooperates){
-            System.out.println("you both defected");
-        }
-    }
-
-    public static void settings(){ //print settings options and allow user to adjust language, input options
-        System.out.println("settings");
-        //todo all this
     }
 
     public static String getPromptedInput(String prompt, String[] validResponses){ //outputs text and reliably returns the response
@@ -144,10 +100,9 @@ public class Main {
             output=findInArray(input, validResponses); //check if the input is a valid response, if so sets output equal to their response, if else the output is null and it asks again
             if(output.equals("")){
                 //if they've already inputted something they shouldn't, explain that
-                System.out.print("This input is not valid. Your valid responses are: ");
-
-                for(int i=0; i< validResponses.length; i++){ //print out all valid inputs
-                    if(i== (validResponses.length - 1)) System.out.println("or "  + validResponses[i]); //if its the last one don't use a comma after
+                System.out.print("This input is not valid. The valid responses are: ");
+                for(int i=0; i< validResponses.length; i++){
+                    if(i==(validResponses.length-1)) System.out.println("or " + validResponses[i]);
                     else System.out.print(validResponses[i] + ", ");
                 }
             }
@@ -156,16 +111,9 @@ public class Main {
     }
 
     public static void endGame(){
-        //runs when a game ends. should: announce score, announce victor, announce overall score including past games, offer option to play again or quit
-        if(gameMode.equals("c")) { //when playing against computer checks computerScore vs playerOneScore
-            if (playerOneScore > computerScore) System.out.println("Congratulations, you win! Your score was " + playerOneScore + ", I scored " + computerScore + "!");//could add more possible answers
-            if (computerScore > playerOneScore) System.out.println("You lose! Your score was " + playerOneScore + ", I scored " + computerScore + "!");
-            else System.out.println("It's a tie! We both scored " + playerOneScore);
-        }if(gameMode.equals("m")){ //when playing multiplayer checks playerOneScore vs playerTwoScore
-            if (playerOneScore > playerTwoScore) System.out.println(playerOneName + " wins!");//could add more possible answers
-            if (playerTwoScore > playerOneScore) System.out.println(playerTwoName + " wins!");
-            else System.out.println("It's a tie! You both scored " + playerOneScore);
-        }
+        //announces sentences
+        if(gameMode.equals("c")) System.out.println("You are sentenced to " + playerOneScore + " years, I am sentenced to " + computerScore + " years.");
+        if(gameMode.equals("m")) System.out.println(playerOneName +" is sentenced to " + playerOneScore + " years. " + playerTwoName +" is sentenced to " + playerTwoScore + " years.");
 
         //ask if they would like to play again
         String decision = getPromptedInput("Would you like to play again", YES_NO_RESPONSES);
@@ -200,14 +148,25 @@ public class Main {
     }
 
     public static void determineRoundWinner(boolean playerACooperates, String playerAName, boolean playerBCooperates, String playerBName){ //determines the winner of a round
+        int addedSentancePlayerA=0;
+        int addedSentancePlayerB=0;
         if(playerACooperates && playerBCooperates){
             System.out.println("you both cooperated");
+            addedSentancePlayerA=1;
+            addedSentancePlayerB=1;
         }if(playerACooperates && !playerBCooperates){
             System.out.println(playerAName + " cooperated, " + playerBName + " defected.");
+            addedSentancePlayerA=3;
         }if(!playerACooperates && playerBCooperates){
             System.out.println(playerBName + " cooperated, " + playerAName + " defected.");
+            addedSentancePlayerB=3;
         }if(!playerACooperates && !playerBCooperates){
             System.out.println("you both defected");
+            addedSentancePlayerA=2;
+            addedSentancePlayerB=2;
         }
+        playerOneScore+=addedSentancePlayerA;
+        if(gameMode.equals("m")) playerTwoScore+=addedSentancePlayerB;
+        if(gameMode.equals("c")) computerScore+=addedSentancePlayerB;
     }
 }
